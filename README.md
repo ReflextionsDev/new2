@@ -19,7 +19,7 @@ In this assignment you will build your own backend for a simple weblogs applicat
 - All response need a status and json
 - Must commit often! Commit as you finish up one feature.
 
-### Models
+## Models
 
 ##### Users
 
@@ -44,7 +44,7 @@ In this assignment you will build your own backend for a simple weblogs applicat
 - post
 - owner
 
-### Routes
+## Routes
 
 ##### User
 
