@@ -1,7 +1,8 @@
 const bcrypt = require("bcryptjs");
 const User = require("../model/User");
 const jwt = require("jsonwebtoken")
-const { errorHandler } = require('../utils/errorHandler')
+const { errorHandler } = require('../utils/errorHandler');
+const { hashPassword } = require("../utils/globalFunctions");
 
 // move redundancies to functions (bcrypt)
 
@@ -9,9 +10,7 @@ const createUser = async (req, res) => {
     try {
         const { firstName, lastName, username, email, password } = req.body
 
-        // bcrypt password
-        let salt = await bcrypt.genSalt(parseInt(process.env.BCRYPTJS_SALTROUNDS))
-        let hashedPassword = await bcrypt.hash(password, salt)
+        let hashedPassword = await hashPassword(password)
 
         let newUser = new User({
             firstName: firstName,
@@ -61,20 +60,14 @@ const userLogin = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     try {
-
         const decodedToken = res.locals.decodedToken
-        // console.log(decodedToken)
-
-        // bcrypt password
-        const salt = await bcrypt.genSalt(parseInt(process.env.BCRYPTJS_SALTROUNDS))
-        const hashedPassword = await bcrypt.hash(req.body.password, salt)
+        let hashedPassword = await hashPassword(req.body.password)
 
         req.body.password = hashedPassword
         const updatedUser = await User.findOneAndUpdate(
             { email: decodedToken.email },
             req.body,
             { new: true })
-
 
         console.log(updatedUser)
 

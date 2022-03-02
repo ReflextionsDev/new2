@@ -8,7 +8,7 @@ const createPost = async (req, res) => {
         const postOwner = await getUserFromToken(res.locals.decodedToken)
         const { title, post } = req.body
 
-        let newPost = new Post ({
+        let newPost = new Post({
             title: title,
             post: post,
             commentHistory: [],
@@ -17,26 +17,31 @@ const createPost = async (req, res) => {
 
         let savedPost = await newPost.save()
 
-        res.status(200).json({ message: "New post has been saved", payload: savedPost})
+        res.status(200).json({ message: "New post has been saved", payload: savedPost })
 
     } catch (error) {
-        res.status(500).json({error: error.message})
-    }    
+        res.status(500).json({ error: error.message })
+    }
 }
 
 const updatePost = async (req, res) => {
-    
+
 }
 
 const getAllPosts = async (req, res) => {
-    
+    try {
+        
+        const allPosts = await Post.find()
+        res.status(200).json({ message: "All Posts", payload: allPosts })
+
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
 }
 
 const deletePost = async (req, res) => {
-    
+
 }
-
-
 
 module.exports = {
     createPost,
