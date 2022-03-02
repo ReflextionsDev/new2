@@ -1,10 +1,19 @@
 var express = require('express');
 var router = express.Router();
-const { createUser } = require('./controller/usersController');
+const { createUser, userLogin, updateProfile } = require('./controller/usersController')
+const { checkIsEmpty,
+  jwtMiddleware,
+  validateCreateData,
+  validateEmail,
+  validateUpdateData } = require('../lib/authMiddleware/index')
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.send('hello from user router');
 });
 
-module.exports = router;
+router.post('/create-user', checkIsEmpty, validateCreateData, createUser)
+router.post('/login', validateEmail, userLogin)
+router.put('/update-profile', jwtMiddleware, checkIsEmpty, validateUpdateData, updateProfile)
+
+module.exports = router
