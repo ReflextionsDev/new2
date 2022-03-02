@@ -7,8 +7,6 @@ const { errorHandler } = require('../utils/errorHandler')
 
 const createUser = async (req, res) => {
     try {
-        console.log("create user")
-
         const { firstName, lastName, username, email, password } = req.body
 
         // bcrypt password
