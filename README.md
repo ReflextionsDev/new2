@@ -5,7 +5,8 @@ In this assignment you will build your own backend for a simple weblogs applicat
 ## User story
 
 - As a user: I can sign up, login, and only update my profile.
-- As a user: I can see all posts and comments.- As a user: I can make my own post, edit it, and delete it.
+- As a user: I can see all posts and comments
+- As a user: I can make my own post, edit it, and delete it.
 - As a user: I can comment on any posts. Edit and delete my own comment.
 - As a user: I cannot change anything that is not mine.
 
