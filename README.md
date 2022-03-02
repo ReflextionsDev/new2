@@ -16,7 +16,7 @@ In this assignment you will build your own backend for a simple weblogs applicat
 - Use MongoDB, mongoose, bcrypt, jwt
 - Create Middleware, include validators
 - All collections have their own folders (file structure is important!)
-- All response need a status
+- All response need a status and json
 - Must commit often! Commit as you finish up one feature.
 
 ### Models
@@ -42,7 +42,7 @@ In this assignment you will build your own backend for a simple weblogs applicat
 
 - comment
 - post
-- user
+- owner
 
 ### Routes
 
@@ -55,13 +55,13 @@ In this assignment you will build your own backend for a simple weblogs applicat
 ##### Post
 
 - http://localhost:3001/posts/create-post
-- http://localhost:3001/posts/get-all-post - will need to show comments of the post
-- http://localhost:3001/posts/delete-post
-- http://localhost:3001/posts/update-post
+- http://localhost:3001/posts/get-all-post - will need to show comments of the post and owner
+- http://localhost:3001/posts/delete-post - only the owner can do this
+- http://localhost:3001/posts/update-post - only the owner can do this
 
 ##### Comment
 
 - http://localhost:3001/comments/create-comment - must bring in a post id
 - http://localhost:3001/comments/get-all-comment - get all comments from current user
-- http://localhost:3001/comments/delete-comment
-- http://localhost:3001/comments/update-comment
+- http://localhost:3001/comments/delete-comment - only the owner can do this
+- http://localhost:3001/comments/update-comment - only the owner can do this
