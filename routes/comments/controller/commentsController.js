@@ -37,7 +37,16 @@ const createComment = async (req, res) => {
 const updateComment = async (req, res) => {
     try {
         const { commentId, comment } = req.body
+        
+        const user = await getUserFromToken(res.locals.decodedToken)
+
+        const commentObj = await Comment.findById(commentId)
+        if (commentObj === null) throw { message: "Comment not found" }
+
+        if (commentObj.owner.toString() !== user._id.toString()) throw { message: "You don't have permission for this."}
+
         const updatedComment = await Comment.findByIdAndUpdate(commentId, req.body, { new: true })
+
         res.status(200).json({ Message: "Post has been updated", payload: updatedComment })
     } catch (error) {
         res.status(500).json({ error: error.message })
@@ -70,7 +79,7 @@ const deleteComment = async (req, res) => {
 
         console.log(comment.owner)
         console.log(user._id)
-        // if (comment.owner !== user._id) throw { message: "You don't have permission for this."}
+        if (comment.owner.toString() !== user._id.toString()) throw { message: "You don't have permission for this."}
         user.commentHistory.pull(id)
         await user.save()
 
