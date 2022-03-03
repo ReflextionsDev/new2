@@ -47,26 +47,44 @@ const updateComment = async (req, res) => {
 const getAllComments = async (req, res) => {
     try {
 
-        const allPosts = await Post.find()
-        res.status(200).json({ message: "All Posts", payload: allPosts })
+        const allComments = await Comment.find()
+        res.status(200).json({ message: "All Comments", payload: allComments })
 
     } catch (error) {
         res.status(500).json({ error: error.message })
     }
 }
 
+// verify comment owner is user
+
 const deleteComment = async (req, res) => {
     try {
+
+        // Get comment
         const { id } = req.params
+        const comment = await Comment.findById(id)
+        if (comment === null) throw { message: "Comment not found" }
 
-        const deletedPost = await Post.findByIdAndDelete(id)
-        if (deletedPost === null) throw { message: "Post not found" }
+        // Pull comment from user
+        const user = await getUserFromToken(res.locals.decodedToken)
 
-        const postOwner = await getUserFromToken(res.locals.decodedToken)
-        postOwner.postHistory.pull(id)
-        await postOwner.save()
+        console.log(comment.owner)
+        console.log(user._id)
+        // if (comment.owner !== user._id) throw { message: "You don't have permission for this."}
+        user.commentHistory.pull(id)
+        await user.save()
 
-        res.status(200).json({ "Deleted comment": deletedPost, "Post removed from user": postOwner })
+        // Pull comment from post
+        const post = await Post.findById(comment.post)
+        post.commentHistory.pull(id)
+        await post.save()
+
+        // Delete comment
+        await Comment.findByIdAndDelete(id)
+
+        res.status(200).json({ "Deleted comment": comment, "Comment removed from user": user, "Comment removed from post": post })
+        // res.send("YOO!")
+
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error.message })
