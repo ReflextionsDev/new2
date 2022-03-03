@@ -12,7 +12,8 @@ router.post('/create-post', jwtMiddleware, checkIsEmpty, createPost)
 router.get('/get-all-post', getAllPosts)
 
 // Working Here
-router.delete('/delete-post', deletePost)
-router.put('/update-post', updatePost)
+
+router.put('/update-post', jwtMiddleware, checkIsEmpty, updatePost)
+router.delete('/delete-post/:id', jwtMiddleware, deletePost)
 
 module.exports = router;
