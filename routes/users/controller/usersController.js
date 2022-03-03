@@ -2,9 +2,7 @@ const bcrypt = require("bcryptjs");
 const User = require("../model/User");
 const jwt = require("jsonwebtoken")
 const { errorHandler } = require('../utils/errorHandler');
-const { hashPassword } = require("../utils/globalFunctions");
-
-// move redundancies to functions (bcrypt)
+const { hashPassword } = require("../utils/userFunctions");
 
 const createUser = async (req, res) => {
     try {

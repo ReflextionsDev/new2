@@ -1,8 +1,5 @@
 const Post = require('../model/Post')
-const User = require('../../users/model/User')
-
-const { getUserFromToken } = require('../../users/utils/globalFunctions')
-const { findByIdAndDelete } = require('../model/Post')
+const { getUserFromToken } = require('../../users/utils/userFunctions')
 
 const createPost = async (req, res) => {
     try {
@@ -34,7 +31,7 @@ const updatePost = async (req, res) => {
     try {
         const { postId, title, post } = req.body
         const updatedPost = await Post.findByIdAndUpdate(postId, req.body, { new: true })
-        res.status(500).json({ Message: "Post has been updated", payload: updatedPost })
+        res.status(200).json({ Message: "Post has been updated", payload: updatedPost })
 
     } catch (error) {
         res.status(500).json({ error: error.message })
