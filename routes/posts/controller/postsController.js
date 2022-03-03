@@ -1,5 +1,6 @@
 const Post = require('../model/Post')
 const { getUserFromToken } = require('../../users/utils/userFunctions')
+const { userLogin } = require('../../users/controller/usersController')
 
 const createPost = async (req, res) => {
     try {
@@ -29,7 +30,16 @@ const createPost = async (req, res) => {
 
 const updatePost = async (req, res) => {
     try {
+        // Get post and owner
         const { postId, title, post } = req.body
+        const postObj = await Post.findById(postId)
+        const postOwner = await getUserFromToken(res.locals.decodedToken)
+
+        // Error handling
+        if (post === null) throw { message: "Post not found" }
+        if (postObj.owner.toString() !== postOwner._id.toString()) throw { message: "You do not have permission for this" }
+
+        // Update post and return       
         const updatedPost = await Post.findByIdAndUpdate(postId, req.body, { new: true })
         res.status(200).json({ Message: "Post has been updated", payload: updatedPost })
 
@@ -52,15 +62,19 @@ const getAllPosts = async (req, res) => {
 const deletePost = async (req, res) => {
     try {
         const { id } = req.params
-
-        const deletedPost = await Post.findByIdAndDelete(id)
-        if (deletedPost === null) throw { message: "Post not found"}
-
+        const post = await Post.findById(id)
         const postOwner = await getUserFromToken(res.locals.decodedToken)
+
+        if (post === null) throw { message: "Post not found" }
+
+        if (post.owner.toString() !== postOwner._id.toString()) throw { message: "You do not have permission for this" }
+
         postOwner.postHistory.pull(id)
         await postOwner.save()
 
-        res.status(200).json({ "Deleted post": deletedPost, "Post removed from user": postOwner})
+        const deletedPost = await Post.findByIdAndDelete(id)
+
+        res.status(200).json({ "Deleted post": deletedPost, "Post removed from user": postOwner })
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error.message })

@@ -64,8 +64,6 @@ const getAllComments = async (req, res) => {
     }
 }
 
-// verify comment owner is user
-
 const deleteComment = async (req, res) => {
     try {
 
