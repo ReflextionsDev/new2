@@ -51,14 +51,16 @@ const updatePost = async (req, res) => {
 
 const getAllPosts = async (req, res) => {
     try {
-
-        const allPosts = await Post.find()
-        res.status(200).json({ message: "All Posts", payload: allPosts })
-
+      const foundAllPosts = await Post.find({})
+        // .populate("owner", "-password -__v")
+        .populate("owner", "username")
+        .populate("commentHistory", "comment");
+      res.status(200).json(foundAllPosts);
     } catch (error) {
-        res.status(500).json({ error: error.message })
+      console.log(error);
+      res.status(500).json({ message: error, error: error });
     }
-}
+  };
 
 const deletePost = async (req, res) => {
     try {
