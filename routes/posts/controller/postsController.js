@@ -1,4 +1,5 @@
 const Post = require('../model/Post')
+const Comment = require('../../comments/model/Comment')
 const { getUserFromToken } = require('../../users/utils/userFunctions')
 const { userLogin } = require('../../users/controller/usersController')
 
@@ -62,19 +63,20 @@ const getAllPosts = async (req, res) => {
 const deletePost = async (req, res) => {
     try {
         const { id } = req.params
-        const post = await Post.findById(id)
-        const postOwner = await getUserFromToken(res.locals.decodedToken)
+        const foundPost = await Post.findById(id)
+        const foundUser = await getUserFromToken(res.locals.decodedToken)
 
-        if (post === null) throw { message: "Post not found" }
+        if (foundPost === null) throw { message: "Post not found" }
 
-        if (post.owner.toString() !== postOwner._id.toString()) throw { message: "You do not have permission for this" }
+        if (foundPost.owner.toString() !== foundUser._id.toString()) throw { message: "You do not have permission for this" }
 
-        postOwner.postHistory.pull(id)
-        await postOwner.save()
+        foundUser.postHistory.pull(id)
+        await foundUser.save()
 
+        const deletedComments = await Comment.deleteMany({ post: id });
         const deletedPost = await Post.findByIdAndDelete(id)
 
-        res.status(200).json({ "Deleted post": deletedPost, "Post removed from user": postOwner })
+        res.status(200).json({ "Deleted post": deletedPost, "Deleted comments": deletedComments, "Post removed from user": foundUser })
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error.message })
